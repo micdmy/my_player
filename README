@@ -1,0 +1,8 @@
+This program is a audio player written in QT.
+Key features will be:
+- media library synchronizing with multiple directories
+- tag editig
+- saving recently played song (or other audio) 
+and starting it again from the moment it was interrupted 
+(very usefull with audiobooks)
+- maybe some more...
