@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     configSignals();
     mediaLibrary.load();
+    ui->tableView->setModel(mediaLibrary.getDataModelPtr());
 
     /*SongInfo s;
     s.setPath("/home/mic/ver.mp3");
@@ -27,7 +28,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::configSignals()
 {
-    connect(ui->actionAdd_directory,SIGNAL(triggered()),&mediaLibrary,SLOT(addDirectory()));
     connect(ui->actionEdit_directories,SIGNAL(triggered()),&mediaLibrary,SLOT(editDirectories()));
     connect(ui->actionReload_all,SIGNAL(triggered()),&mediaLibrary,SLOT(reloadAllDirectories()));
     connect(ui->actionUsed_tags,SIGNAL(triggered()),&mediaLibrary,SLOT(editUsedTags()));
@@ -37,3 +37,8 @@ void MainWindow::configSignals()
 
 
 
+
+void MainWindow::on_actionrepaint_triggered()
+{
+   // ui->tableView->repaint();
+}

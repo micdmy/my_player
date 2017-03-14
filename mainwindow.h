@@ -15,6 +15,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+private slots:
+    void on_actionrepaint_triggered();
+
 private:
     Ui::MainWindow *ui;
     MediaLibrary mediaLibrary;

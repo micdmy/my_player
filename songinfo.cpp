@@ -8,10 +8,12 @@
  */
 
 TagLib::StringList SongInfo::usedTags;
-
+QStringList SongInfo::usedTagsQ;
+QString SongInfo::emptyString;
 SongInfo::SongInfo(QObject *parent):
 QObject(parent)
 {
+
 }
 /*
  * Constructs SongInfo reading tags from file at path.
@@ -40,6 +42,12 @@ QString SongInfo::getMetadata(const QString &key)
 {
     return data.operator [](key);
 }
+
+QString & SongInfo::getMetadata(int column)
+{
+    return data.operator [](usedTagsQ.operator [](column));
+}
+
 /*
  * To be used with saving tags to files.
  * Doesn't work yet.
@@ -57,10 +65,26 @@ void SongInfo::setMetadata(const QString &/*key*/, QString &/*value*/)
  */
 void SongInfo::setUsedTags(const QStringList &tags)
 {
+    usedTagsQ.clear();
+    usedTagsQ << PATHKEY;
+    usedTagsQ += tags;
     usedTags.clear();
     for(int i=0; i<tags.length();i++) {
         usedTags.append(TagLib::String(tags.at(i).toStdString()));
     }
+}
+
+int SongInfo::getUsedTagsCount()
+{
+    return usedTagsQ.length();
+}
+
+QString &SongInfo::getUsedTag(int index)
+{
+    if(index < usedTagsQ.length()) {
+        return usedTagsQ.operator [](index);
+    }
+    return emptyString;
 }
 /*
  * Returns path of asociated file.

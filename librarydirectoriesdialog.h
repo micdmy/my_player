@@ -24,17 +24,20 @@ private:
     MediaDirectories * mediaDirectories;
     DirectoriesListModel * model;
     QItemSelectionModel * selectionModel;
-    QStringList newDirectories;
+    void removeRepeats(void);
+    QStringList oldDirectories;
+    QStringList getAdded();
+    QStringList getRemoved();
     void editPath(int row);
     int getCurrentRow();
-    void removeInNewDirectories(QString path);
+    //void removeInNewDirectories(QString path);
 private slots:
   void pathDoubleClicked(QModelIndex index );
   void on_addButton_clicked();
   void on_removeButton_clicked();
   void on_editButton_clicked();
 signals:
-  void directoriesAdded(QStringList dirs);
+  void directoriesChanged(QStringList added,QStringList removed);
 };
 
 #endif // LIBRARYDIRECTORIESDIALOG_H

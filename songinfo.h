@@ -23,8 +23,11 @@ public:
     SongInfo(const SongInfo& s);
     SongInfo & operator =(const SongInfo& s);
     QString getMetadata(const QString &key);
+    QString &getMetadata(int column);
     void setMetadata(const QString &key, QString &value);
     static void setUsedTags(const QStringList & tags);
+    static int getUsedTagsCount(void);
+    static QString & getUsedTag(int index);
     QString getPath();
     void setPath(const QString &path);
     void readFile();
@@ -33,9 +36,12 @@ public:
     friend QDataStream & operator>>(QDataStream & dStream, SongInfo & songInfo);
     //saving to QDataStream:
     friend QDataStream & operator<<(QDataStream & dStream,const SongInfo & songInfo);
+     //copy of used Tags for convinient use in QT
 private:
     QHash<QString,QString> data;
     static TagLib::StringList usedTags;
+    static QStringList usedTagsQ;
+    static QString emptyString;
     void clearDataExceptPath();
 };
 

@@ -3,14 +3,21 @@
 
 #include "songinfo.h"
 #include <QList>
+#include <QAbstractTableModel>
 
-class SongsInLibrary
+class SongsInLibrary : public QAbstractTableModel
 {
 public:
-    SongsInLibrary();
+    SongsInLibrary(QObject * parent = 0);
     QList<SongInfo> & getSongsList();
+    void removeAllSongs();
     void addSongs(const QStringList & pathList);
-    void setSongs(const QStringList & pathList);
+    void setColumns(const QStringList & tags);
+    void emitAllDataChanged(void);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const ;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     //reading from QDataStream:
     friend QDataStream & operator>>(QDataStream & dStream, SongsInLibrary & songsInLibrary);
     //saving to QDataStream:

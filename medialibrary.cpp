@@ -2,7 +2,7 @@
 
 MediaLibrary::MediaLibrary(QObject *parent) : QObject(parent)
 {
-
+    SongInfo::setUsedTags(QStringList());
 }
 
 MediaLibrary::~MediaLibrary()
@@ -10,34 +10,48 @@ MediaLibrary::~MediaLibrary()
 
 }
 
-void MediaLibrary::addDirectory()
-{
-    QString newDirectory = dirModel.add();
-    saveSettings();
-    reloadDirectories(QStringList(newDirectory));
-}
+
 
 void MediaLibrary::editDirectories()
 {
     LibraryDirectoriesDialog editDirectoriesDialog(&dirModel);
-    connect(&editDirectoriesDialog,SIGNAL(directoriesAdded(QStringList)),this,SLOT(reloadDirectories(QStringList)));
+    connect(&editDirectoriesDialog,SIGNAL(directoriesChanged(QStringList,QStringList)),this,SLOT(reloadDirectories(QStringList,QStringList)));
     editDirectoriesDialog.exec();
     saveSettings();
 }
 
 void MediaLibrary::reloadAllDirectories()
 {
-    reloadDirectories(dirModel.getList());
-}
-
-void MediaLibrary::reloadDirectories(QStringList directories)
-{
-    SongInfo::setUsedTags(tags);
     PathScanner pathScanner;
-    for(QString path : directories) {
-        songs.setSongs(pathScanner.scanDirectory(path,fileFormats));
+    songsModel.removeAllSongs();
+    for(QString path : dirModel.getList()) {
+        songsModel.addSongs(pathScanner.scanDirectory(path,fileFormats));
     }
     saveSongs();
+    songsModel.emitAllDataChanged();
+}
+
+void MediaLibrary::reloadDirectories(QStringList addDirs, QStringList removeDirs)
+{
+    //this function should be rewritten in future to implement removing directories
+    if(!(addDirs.isEmpty() && removeDirs.isEmpty())) {
+        PathScanner pathScanner;
+        /*
+         * if removeDirs is not empty reloads all dirs from dirModel
+         */
+        if(removeDirs.isEmpty()) { //only add songs from addDirs
+            for(QString path : addDirs) {
+                songsModel.addSongs(pathScanner.scanDirectory(path,fileFormats));
+            }
+        } else { //reload all dirs
+            songsModel.removeAllSongs();
+            for(QString path : dirModel.getList()) {
+                songsModel.addSongs(pathScanner.scanDirectory(path,fileFormats));
+            }
+        }
+        saveSongs();
+        songsModel.emitAllDataChanged();
+    }
 }
 
 void MediaLibrary::editUsedTags()
@@ -46,8 +60,14 @@ void MediaLibrary::editUsedTags()
     StringListDialog dialog(&model, "Set used tags ",
                             "Set tags which are read \nwhile scanning source directories.\nI.e.: artist\nFor changes to take place,\nreload library!");
     dialog.exec();
-    tags = model.stringList();
-    saveSettings();
+    if(tags != model.stringList()) {
+        tags = model.stringList();
+        saveSettings();
+        if(ErrGui::ask("Tags have been changed.\nReload library with new tags?")) {
+            songsModel.setColumns(tags);
+            reloadAllDirectories();
+        }
+    }
 }
 
 void MediaLibrary::editUsedFileFormats()
@@ -56,8 +76,15 @@ void MediaLibrary::editUsedFileFormats()
     StringListDialog dialog(&model, "Set used file formats (i.e *.mp3)",
                             "Set file formats of files to read \nwhile scanning source directories.\nI.e.: *.mp3\nFor changes to take place,\nreload library!");
     dialog.exec();
-    fileFormats = model.stringList();
-    saveSettings();
+    if(fileFormats != model.stringList()) {
+        fileFormats = model.stringList();
+        saveSettings();
+        if(ErrGui::ask("File formats have been changed.\nReload library?")) {
+            reloadAllDirectories();
+        }
+    }
+
+
 }
 
 void MediaLibrary::setDefaultTagsAndFileFormats()
@@ -72,7 +99,7 @@ void MediaLibrary::saveSongs()
     QFile file(ProgramPaths::mediaLibrarySongsList());
     if(file.open(QIODevice::WriteOnly)) {
         QDataStream out(&file);
-        out << songs;
+        out << songsModel;
         file.close();
     } else{
         ErrGui::error(file);
@@ -100,15 +127,17 @@ void MediaLibrary::loadSongs()
     if(file.exists()) {
         if(file.open(QIODevice::ReadOnly)) {
             QDataStream in(&file);
-            in >> songs;
-            file.close();
+            in >> songsModel;
+            file.close();      
         } else {
             ErrGui::error(file);
         }
+    } else {
+        ErrGui::error(file);
     }
 }
 
-void MediaLibrary::loadSettings()
+int MediaLibrary::loadSettings()
 {
     QFile file(ProgramPaths::mediaLibrarySettings());
     if(file.exists()) {
@@ -118,15 +147,12 @@ void MediaLibrary::loadSettings()
             in >> fileFormats;
             in >> dirModel;
             file.close();
+            return 1;
         } else {
             ErrGui::error(file);
         }
-    }  else {
-        setDefaultTagsAndFileFormats();
-        if(ErrGui::ask("Media library not configured.\n Add directories to library now?")) {
-            addDirectory();
-        }
     }
+    return 0;
 }
 
 void MediaLibrary::setDefaultTags()
@@ -141,8 +167,22 @@ void MediaLibrary::setDefaultFileFormats()
 
 void MediaLibrary::load()
 {
-    loadSettings();
-    loadSongs();
+    if(loadSettings()) {
+       //loaded, ok
+       songsModel.setColumns(tags);
+       loadSongs();
+    } else {
+        setDefaultTagsAndFileFormats();
+        songsModel.setColumns(tags);
+        if(ErrGui::ask("Media library never configured.\n Add directories to library now?")) {
+            editDirectories();
+        }
+    }
+}
+
+SongsInLibrary *MediaLibrary::getDataModelPtr()
+{
+    return &songsModel;
 }
 
 
