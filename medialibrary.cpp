@@ -3,11 +3,13 @@
 MediaLibrary::MediaLibrary(QObject *parent) : QObject(parent)
 {
     SongInfo::setUsedTags(QStringList());
+
+
 }
 
 MediaLibrary::~MediaLibrary()
 {
-
+    delete songsFilterModel;
 }
 
 
@@ -183,6 +185,23 @@ void MediaLibrary::load()
 SongsInLibrary *MediaLibrary::getDataModelPtr()
 {
     return &songsModel;
+}
+
+SongsInLibrarySortFilter *MediaLibrary::getProxyModel()
+{
+    return songsFilterModel;
+}
+
+void MediaLibrary::initProxyModel()
+{
+    songsFilterModel = new SongsInLibrarySortFilter(this);
+    songsFilterModel->setSourceModel(&songsModel);
+}
+
+void MediaLibrary::setupProxyModel(QItemSelectionModel * selectionModel, QLineEdit * filterChangedSender)
+{
+    songsFilterModel->setSelectionModel(selectionModel);
+    connect(filterChangedSender,SIGNAL(textChanged(QString)),songsFilterModel,SLOT(filterChanged(QString)));
 }
 
 

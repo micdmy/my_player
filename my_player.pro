@@ -32,11 +32,12 @@ SOURCES += main.cpp\
     errgui.cpp \
     librarydirectoriesdialog.cpp \
     directorieslistmodel.cpp \
-    songstablemodel.cpp \
     songinfo.cpp \
     songsinlibrary.cpp \
     pathscanner.cpp \
-    stringlistdialog.cpp
+    stringlistdialog.cpp \
+    onetaglistmodel.cpp \
+    songsinlibrarysortfilter.cpp
 
 HEADERS  += mainwindow.h \
     medialibrary.h \
@@ -44,11 +45,12 @@ HEADERS  += mainwindow.h \
     errgui.h \
     librarydirectoriesdialog.h \
     directorieslistmodel.h \
-    songstablemodel.h \
     songinfo.h \
     songsinlibrary.h \
     pathscanner.h \
-    stringlistdialog.h
+    stringlistdialog.h \
+    onetaglistmodel.h \
+    songsinlibrarysortfilter.h
 
 FORMS    += mainwindow.ui \
     librarydirectoriesdialog.ui \

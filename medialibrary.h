@@ -3,10 +3,13 @@
 
 #include <QObject>
 #include <QFileDialog>
+#include <QLineEdit>
+#include <QHeaderView>
 #include "programpaths.h"
 #include "librarydirectoriesdialog.h"
 #include "directorieslistmodel.h"
 #include "songsinlibrary.h"
+#include "songsinlibrarysortfilter.h"
 #include "pathscanner.h"
 #include "stringlistdialog.h"
 class MediaLibrary : public QObject
@@ -17,9 +20,13 @@ public:
     ~MediaLibrary();
     void    load(void);
     SongsInLibrary * getDataModelPtr(void);
+    SongsInLibrarySortFilter * getProxyModel(void);
+    void initProxyModel(void);
+    void setupProxyModel(QItemSelectionModel * selectionModel, QLineEdit *filterChangedSender);
 private:
     DirectoriesListModel dirModel;
     SongsInLibrary songsModel;
+    SongsInLibrarySortFilter * songsFilterModel;
     void    saveSongs(void);
     void    saveSettings(void);
     void    loadSongs(void);

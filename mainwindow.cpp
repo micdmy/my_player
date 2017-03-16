@@ -8,17 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     configSignals();
     mediaLibrary.load();
-    ui->tableView->setModel(mediaLibrary.getDataModelPtr());
 
-    /*SongInfo s;
-    s.setPath("/home/mic/ver.mp3");
-
-
-    s.readFile();*/
-    //SongsInLibrary sin;
-
-    //sin.addSongs(paths);
-
+    ui->tableView->setModel( mediaLibrary.getDataModelPtr() );
+    mediaLibrary.initProxyModel();
+    ui->tableViewSorted->setModel( mediaLibrary.getProxyModel() );
+    mediaLibrary.setupProxyModel(
+                ui->tableViewSorted->selectionModel(), //sets selection model
+                ui->lineEdit); //connects with lineEdit textChanged signal
 }
 
 MainWindow::~MainWindow()
@@ -42,3 +38,5 @@ void MainWindow::on_actionrepaint_triggered()
 {
    // ui->tableView->repaint();
 }
+
+

@@ -2,7 +2,7 @@
 #define LIBRARYDIRECTORIESDIALOG_H
 
 #include <QDialog>
-#include "mediadirectories.h"
+
 #include <QAbstractItemModel>
 #include <QStringListModel>
 #include<QAbstractItemView>
@@ -21,7 +21,7 @@ public:
 
 private:
     Ui::LibraryDirectoriesDialog *ui;
-    MediaDirectories * mediaDirectories;
+
     DirectoriesListModel * model;
     QItemSelectionModel * selectionModel;
     void removeRepeats(void);

@@ -5,6 +5,7 @@
 #include "medialibrary.h"
 #include "songinfo.h"
 #include "songsinlibrary.h"
+#include "songsinlibrarysortfilter.h"
 namespace Ui {
 class MainWindow;
 }
@@ -17,6 +18,7 @@ public:
     ~MainWindow();
 private slots:
     void on_actionrepaint_triggered();
+
 
 private:
     Ui::MainWindow *ui;
