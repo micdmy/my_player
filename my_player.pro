@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     pathscanner.cpp \
     stringlistdialog.cpp \
     onetaglistmodel.cpp \
-    songsinlibrarysortfilter.cpp
+    songsinlibrarysortfilter.cpp \
+    searchframe.cpp
 
 HEADERS  += mainwindow.h \
     medialibrary.h \
@@ -50,8 +51,10 @@ HEADERS  += mainwindow.h \
     pathscanner.h \
     stringlistdialog.h \
     onetaglistmodel.h \
-    songsinlibrarysortfilter.h
+    songsinlibrarysortfilter.h \
+    searchframe.h
 
 FORMS    += mainwindow.ui \
     librarydirectoriesdialog.ui \
-    stringlistdialog.ui
+    stringlistdialog.ui \
+    searchframe.ui

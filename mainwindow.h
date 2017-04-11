@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTableView>
 #include "medialibrary.h"
 #include "songinfo.h"
 #include "songsinlibrary.h"
@@ -16,15 +17,13 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-private slots:
-    void on_actionrepaint_triggered();
-
 
 private:
     Ui::MainWindow *ui;
+    QTableView * tableViewSorted;
     MediaLibrary mediaLibrary;
     void configSignals();
-
+    void setupCustomWidgets();
 };
 
 #endif // MAINWINDOW_H

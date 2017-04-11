@@ -6,15 +6,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setupCustomWidgets();
     configSignals();
+
     mediaLibrary.load();
 
     ui->tableView->setModel( mediaLibrary.getDataModelPtr() );
     mediaLibrary.initProxyModel();
-    ui->tableViewSorted->setModel( mediaLibrary.getProxyModel() );
+    tableViewSorted->setModel( mediaLibrary.getProxyModel() );
     mediaLibrary.setupProxyModel(
-                ui->tableViewSorted->selectionModel(), //sets selection model
-                ui->lineEdit); //connects with lineEdit textChanged signal
+                tableViewSorted->selectionModel(), //sets selection model
+                ui->frameSearchSongs); //connects with lineEdit textChanged signal
 }
 
 MainWindow::~MainWindow()
@@ -31,12 +33,11 @@ void MainWindow::configSignals()
     connect(ui->actionSet_default_tags_file_formats,SIGNAL(triggered()),&mediaLibrary,SLOT(setDefaultTagsAndFileFormats()));
 }
 
-
-
-
-void MainWindow::on_actionrepaint_triggered()
+void MainWindow::setupCustomWidgets()
 {
-   // ui->tableView->repaint();
+    tableViewSorted =new QTableView();
+    ui->frameSearchSongs->addWidget(tableViewSorted);
 }
+
 
 

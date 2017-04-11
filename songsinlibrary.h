@@ -14,6 +14,7 @@ public:
     void addSongs(const QStringList & pathList);
     void setColumns(const QStringList & tags);
     void emitAllDataChanged(void);
+    void findAllValuesOfTag(QString &tag, QStringList *foundValues);
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;

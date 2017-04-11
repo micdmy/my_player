@@ -96,6 +96,16 @@ void MediaLibrary::setDefaultTagsAndFileFormats()
     saveSettings();
 }
 
+void MediaLibrary::reloadExtraFiltersValues(QStringList & tags)
+{
+    clearExtraFiltersValues(); //deletes previous objects in this QHash
+    for(QString tag : tags) {
+        QStringList * valuesOfTheTag = new QStringList();
+        songsModel.findAllValuesOfTag(tag,valuesOfTheTag);
+        extraFiltersValues.insert(tag,valuesOfTheTag);
+    }
+}
+
 void MediaLibrary::saveSongs()
 {
     QFile file(ProgramPaths::mediaLibrarySongsList());
@@ -167,6 +177,14 @@ void MediaLibrary::setDefaultFileFormats()
     fileFormats << "*.mp3" << "*.flac" << "*.wma";
 }
 
+void MediaLibrary::clearExtraFiltersValues()
+{
+    for(auto key : extraFiltersValues.keys()) {
+        delete extraFiltersValues.value(key);
+    }
+    extraFiltersValues.clear();
+}
+
 void MediaLibrary::load()
 {
     if(loadSettings()) {
@@ -198,10 +216,10 @@ void MediaLibrary::initProxyModel()
     songsFilterModel->setSourceModel(&songsModel);
 }
 
-void MediaLibrary::setupProxyModel(QItemSelectionModel * selectionModel, QLineEdit * filterChangedSender)
+void MediaLibrary::setupProxyModel(QItemSelectionModel * selectionModel, SearchFrame * filterChangedSender)
 {
     songsFilterModel->setSelectionModel(selectionModel);
-    connect(filterChangedSender,SIGNAL(textChanged(QString)),songsFilterModel,SLOT(filterChanged(QString)));
+    connect(filterChangedSender,SIGNAL(searchTextChanged(QString)),songsFilterModel,SLOT(filterChanged(QString)));
 }
 
 

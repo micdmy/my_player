@@ -47,6 +47,15 @@ void SongsInLibrary::emitAllDataChanged()
     emit dataChanged(createIndex(0,0),createIndex(songsList.length(),SongInfo::getUsedTagsCount()));
 }
 
+void SongsInLibrary::findAllValuesOfTag(QString &tag, QStringList *foundValues)
+{
+    QSet<QString> set;
+    for(SongInfo song : songsList) {
+        set.insert(song.getMetadata(tag));
+    }
+    *foundValues = set.toList();
+}
+
 int SongsInLibrary::rowCount(const QModelIndex &/*parent*/) const
 {
     return songsList.length();

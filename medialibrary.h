@@ -12,6 +12,7 @@
 #include "songsinlibrarysortfilter.h"
 #include "pathscanner.h"
 #include "stringlistdialog.h"
+#include "searchframe.h"
 class MediaLibrary : public QObject
 {
     Q_OBJECT
@@ -22,7 +23,7 @@ public:
     SongsInLibrary * getDataModelPtr(void);
     SongsInLibrarySortFilter * getProxyModel(void);
     void initProxyModel(void);
-    void setupProxyModel(QItemSelectionModel * selectionModel, QLineEdit *filterChangedSender);
+    void setupProxyModel(QItemSelectionModel * selectionModel, SearchFrame *filterChangedSender);
 private:
     DirectoriesListModel dirModel;
     SongsInLibrary songsModel;
@@ -34,6 +35,8 @@ private:
     void setDefaultTags();
     void setDefaultFileFormats();
     QStringList tags, fileFormats;
+    QHash<QString,QStringList*> extraFiltersValues; //<tag, list of existing vales of this tag in library>
+    void clearExtraFiltersValues(void);
 signals:
 
 public slots:
@@ -41,7 +44,9 @@ public slots:
     void    reloadAllDirectories(void);
     void    editUsedTags(void);
     void    editUsedFileFormats(void);
-    void    setDefaultTagsAndFileFormats();
+    void    setDefaultTagsAndFileFormats(void);
+    void    reloadExtraFiltersValues(QStringList & tags);
+
 private slots:
 void    reloadDirectories(QStringList add, QStringList removeList);
 };
