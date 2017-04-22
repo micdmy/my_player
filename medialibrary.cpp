@@ -9,6 +9,7 @@ MediaLibrary::MediaLibrary(QObject *parent) : QObject(parent)
 
 MediaLibrary::~MediaLibrary()
 {
+    deleteOneTagModelsAndFilters();
     delete songsFilterModel;
 }
 
@@ -106,6 +107,25 @@ void MediaLibrary::reloadExtraFiltersValues(QStringList & tags)
     }
 }
 
+void MediaLibrary::reloadOneTagTableModels(QStringList &tags)
+{
+    deleteOneTagModelsAndFilters();
+    reloadExtraFiltersValues(tags);
+    for(auto key : extraFiltersValues.keys()) {
+        QStringList headerNames;
+        QList<QStringList *> columnsData;
+        headerNames.append(key);
+        columnsData.append(extraFiltersValues.value(key));
+        OneTagTableModel * oneTagTableModel
+                = new OneTagTableModel(headerNames,columnsData);
+        oneTagTableModels.append(oneTagTableModel);
+        OneTagSortFilter * oneTagSortFilter
+                = new OneTagSortFilter();
+        oneTagSortFilter->setSourceModel(oneTagTableModel);
+        oneTagSortFilters.append((oneTagSortFilter));
+    }
+}
+
 void MediaLibrary::saveSongs()
 {
     QFile file(ProgramPaths::mediaLibrarySongsList());
@@ -185,6 +205,18 @@ void MediaLibrary::clearExtraFiltersValues()
     extraFiltersValues.clear();
 }
 
+void MediaLibrary::deleteOneTagModelsAndFilters()
+{
+    for(OneTagSortFilter * filter : oneTagSortFilters) {
+        delete filter;
+    }
+    for(OneTagTableModel * model : oneTagTableModels) {
+        delete model;
+    }
+    oneTagSortFilters.clear();
+    oneTagTableModels.clear();
+}
+
 void MediaLibrary::load()
 {
     if(loadSettings()) {
@@ -214,12 +246,18 @@ void MediaLibrary::initProxyModel()
 {
     songsFilterModel = new SongsInLibrarySortFilter(this);
     songsFilterModel->setSourceModel(&songsModel);
+    connect(songsFilterModel,SIGNAL(selectedColumnsChanged()),&songsModel,SLOT(selectedColumnsChanged()));
 }
 
 void MediaLibrary::setupProxyModel(QItemSelectionModel * selectionModel, SearchFrame * filterChangedSender)
 {
     songsFilterModel->setSelectionModel(selectionModel);
     connect(filterChangedSender,SIGNAL(searchTextChanged(QString)),songsFilterModel,SLOT(filterChanged(QString)));
+}
+
+QList<OneTagSortFilter *> MediaLibrary::getOneTagSortFilters()
+{
+    return oneTagSortFilters;
 }
 
 

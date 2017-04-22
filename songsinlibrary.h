@@ -25,6 +25,9 @@ public:
     friend QDataStream & operator<<(QDataStream & dStream,const SongsInLibrary & songsInLibrary);
 private:
     QList<SongInfo> songsList;
+    QModelIndexList lastSelectedColumns;
+    bool isColumnSelected(int section) const;
+
 };
 
 

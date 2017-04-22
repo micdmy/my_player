@@ -13,6 +13,8 @@
 #include "pathscanner.h"
 #include "stringlistdialog.h"
 #include "searchframe.h"
+#include "onetagtablemodel.h"
+#include "onetagsortfilter.h"
 class MediaLibrary : public QObject
 {
     Q_OBJECT
@@ -24,10 +26,11 @@ public:
     SongsInLibrarySortFilter * getProxyModel(void);
     void initProxyModel(void);
     void setupProxyModel(QItemSelectionModel * selectionModel, SearchFrame *filterChangedSender);
+    QList<OneTagSortFilter *> getOneTagSortFilters(void);
 private:
     DirectoriesListModel dirModel;
-    SongsInLibrary songsModel;
-    SongsInLibrarySortFilter * songsFilterModel;
+    SongsInLibrary songsModel; //TODO dostaje sygnal , zmienia headery
+    SongsInLibrarySortFilter * songsFilterModel; //TODO daje sygnal
     void    saveSongs(void);
     void    saveSettings(void);
     void    loadSongs(void);
@@ -35,9 +38,12 @@ private:
     void setDefaultTags();
     void setDefaultFileFormats();
     QStringList tags, fileFormats;
-    QHash<QString,QStringList*> extraFiltersValues; //<tag, list of existing vales of this tag in library>
+    QHash<QString,QStringList*> extraFiltersValues; //<tag, list of existing values of this tag in library>
     void clearExtraFiltersValues(void);
-signals:
+    void reloadExtraFiltersValues(QStringList & tags);
+    QList<OneTagTableModel *> oneTagTableModels;
+    QList<OneTagSortFilter *> oneTagSortFilters;
+    void deleteOneTagModelsAndFilters(void);
 
 public slots:
     void    editDirectories(void);
@@ -45,10 +51,9 @@ public slots:
     void    editUsedTags(void);
     void    editUsedFileFormats(void);
     void    setDefaultTagsAndFileFormats(void);
-    void    reloadExtraFiltersValues(QStringList & tags);
-
+    void    reloadOneTagTableModels(QStringList & tags);
 private slots:
-void    reloadDirectories(QStringList add, QStringList removeList);
+    void    reloadDirectories(QStringList add, QStringList removeList);
 };
 
 #endif // MEDIALIBRARY_H

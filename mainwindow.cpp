@@ -17,6 +17,18 @@ MainWindow::MainWindow(QWidget *parent) :
     mediaLibrary.setupProxyModel(
                 tableViewSorted->selectionModel(), //sets selection model
                 ui->frameSearchSongs); //connects with lineEdit textChanged signal
+
+
+
+    QStringList abc;
+    abc << "artist";
+    mediaLibrary.reloadOneTagTableModels(abc);
+    tableViewOneTag = new QTableView();
+    ui->frameOneTagTable->addWidget(tableViewOneTag);
+    OneTagSortFilter * oneTagSortFilter = mediaLibrary.getOneTagSortFilters().first();
+    tableViewOneTag->setModel(oneTagSortFilter);
+    connect(ui->frameOneTagTable,SIGNAL(searchTextChanged(QString)),
+            oneTagSortFilter,SLOT(setFilterRegExp(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -36,8 +48,8 @@ void MainWindow::configSignals()
 void MainWindow::setupCustomWidgets()
 {
     tableViewSorted =new QTableView();
+
     ui->frameSearchSongs->addWidget(tableViewSorted);
+
+
 }
-
-
-

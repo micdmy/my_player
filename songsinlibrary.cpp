@@ -66,6 +66,7 @@ int SongsInLibrary::columnCount(const QModelIndex &/*parent*/) const
     return SongInfo::getUsedTagsCount();
 }
 
+
 QVariant SongsInLibrary::data(const QModelIndex &index, int role) const
 {
     switch(role) {
@@ -93,6 +94,8 @@ QVariant SongsInLibrary::headerData(int section, Qt::Orientation orientation, in
     }
     }
 }
+
+
 
 /*
  * Reading from stream.

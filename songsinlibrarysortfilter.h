@@ -10,8 +10,9 @@ class SongsInLibrarySortFilter : public QSortFilterProxyModel
     Q_OBJECT
 public:
     SongsInLibrarySortFilter(QObject * parent = 0);
-    ~SongsInLibrarySortFilter();
     void setSelectionModel(QItemSelectionModel * selectionModel);
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    void setSelectedColumnSign(const QChar & prefix, const QChar & suffix);
     /*QDate getMinimumDate() const { return minDate; }
     void setFilterMinimumDate(const QDate &date);
     QDate getMaximumDate() const { return maxDate; }
@@ -25,11 +26,13 @@ private:
    // bool dateInRange(const QDate &date) const;
     QModelIndexList selectedColumns;
     QItemSelectionModel * selectionModel;
-    bool checkText(int column, int sourceRow, const QModelIndex &sourceParent, QRegExp * regex) const;
+    QChar selectedColumnSign[2];
     bool blockSelectionChanges;
     QList<QPair<int, QString>> extraFilters;
     bool checkfilter(int sourceRow, const QModelIndex &sourceParent) const;
+    bool checkText(int column, int sourceRow, const QModelIndex &sourceParent, QRegExp * regex) const;
     bool checkANDExtraFilters(int sourceRow, const QModelIndex &sourceParent) const;
+    bool isColumnSelected(int section) const;
 public slots:
     void selectionChanged(const QItemSelection & , const QItemSelection & );
     void filterChanged(const QString & pattern);

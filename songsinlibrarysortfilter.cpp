@@ -4,11 +4,7 @@ SongsInLibrarySortFilter::SongsInLibrarySortFilter(QObject *parent)
     :QSortFilterProxyModel(parent)
 {
     blockSelectionChanges =false;
-}
-
-SongsInLibrarySortFilter::~SongsInLibrarySortFilter()
-{
-
+    setSelectedColumnSign('[',']');
 }
 
 void SongsInLibrarySortFilter::setSelectionModel(QItemSelectionModel *selectionModel)
@@ -16,6 +12,25 @@ void SongsInLibrarySortFilter::setSelectionModel(QItemSelectionModel *selectionM
     this->selectionModel = selectionModel;
     connect(selectionModel,SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this,SLOT(selectionChanged(QItemSelection,QItemSelection)));
+}
+
+QVariant SongsInLibrarySortFilter::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    QVariant header = sourceModel()->headerData(section, orientation, role);
+    switch(role) {
+    case Qt::DisplayRole : {
+        if(orientation == Qt::Horizontal) { //rows
+            header = isColumnSelected(section) ? selectedColumnSign[0] + header.toString() + selectedColumnSign[1] : header;
+        }
+    }
+    }
+    return header;
+}
+
+void SongsInLibrarySortFilter::setSelectedColumnSign(const QChar &prefix, const QChar &suffix)
+{
+    selectedColumnSign[0] = prefix;
+    selectedColumnSign[1] = suffix;
 }
 
 bool SongsInLibrarySortFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -39,7 +54,6 @@ bool SongsInLibrarySortFilter::checkfilter(int sourceRow, const QModelIndex &sou
         return true;
     } else {
         QRegExp regex;
-        QString text;
         bool displayThisRow = false;
         /*
          * if pattern longer then 2 chars, searches in whole text,
@@ -79,6 +93,16 @@ bool SongsInLibrarySortFilter::checkANDExtraFilters(int sourceRow,const QModelIn
         }
     }
     return true;
+}
+
+bool SongsInLibrarySortFilter::isColumnSelected(int section) const
+{
+    for(QModelIndex index : selectedColumns) {
+        if(section == index.column()) {
+            return true;
+        }
+    }
+    return false;
 }
 void SongsInLibrarySortFilter::selectionChanged(const QItemSelection &, const QItemSelection &)
 {

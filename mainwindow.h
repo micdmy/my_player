@@ -7,6 +7,7 @@
 #include "songinfo.h"
 #include "songsinlibrary.h"
 #include "songsinlibrarysortfilter.h"
+#include "onetagtablemodel.h"
 namespace Ui {
 class MainWindow;
 }
@@ -21,9 +22,11 @@ public:
 private:
     Ui::MainWindow *ui;
     QTableView * tableViewSorted;
+    QTableView * tableViewOneTag;
     MediaLibrary mediaLibrary;
     void configSignals();
     void setupCustomWidgets();
+
 };
 
 #endif // MAINWINDOW_H
