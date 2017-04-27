@@ -6,6 +6,18 @@ OneTagSortFilter::OneTagSortFilter(QObject *parent):
 
 }
 
+OneTagSortFilter::~OneTagSortFilter()
+{
+
+}
+
+void OneTagSortFilter::setSelectionModel(QItemSelectionModel *selectionModel)
+{
+    this->selectionModel = selectionModel;
+    connect(selectionModel,SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this,SLOT(selectionChanged(QItemSelection,QItemSelection)));
+}
+
 bool OneTagSortFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
      return checkfilter(sourceRow, sourceParent);
@@ -35,7 +47,24 @@ bool OneTagSortFilter::checkfilter(int sourceRow, const QModelIndex &sourceParen
 bool OneTagSortFilter::checkText(int column, int sourceRow, const QModelIndex &sourceParent, QRegExp *regex) const
 {
     static const QRegularExpression theRegex(QString("(the\\s)"),QRegularExpression::CaseInsensitiveOption);
-    QString text = sourceModel()->data(sourceModel()->index(sourceRow, column, sourceParent)).toString();
+    QString text;
+    if(sourceModel() != NULL) {
+        text = sourceModel()->data(sourceModel()->index(sourceRow, column, sourceParent)).toString();
+    }
     text.remove(theRegex);
     return text.contains(*regex);
+}
+
+void OneTagSortFilter::selectionChanged(const QItemSelection &, const QItemSelection &)
+{
+    if(sourceModel() != NULL) {
+        selectedTagValues.clear();
+        QModelIndexList selectedRows = selectionModel->selectedRows();
+        for(QModelIndex index : selectedRows) {
+            QVariant data = sourceModel()->data(index,OneTagTableModel::TagValue);
+            selectedTagValues.append(data.toString());
+        }
+        emit oneTagFilterChanged(sourceModel()->headerData(0,0,OneTagTableModel::TagName),
+                                 sourceModel->selectedTagValues);
+    }
 }

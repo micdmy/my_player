@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     songsinlibrarysortfilter.cpp \
     searchframe.cpp \
     onetagtablemodel.cpp \
-    onetagsortfilter.cpp
+    onetagsortfilter.cpp \
+    extrafilters.cpp
 
 HEADERS  += mainwindow.h \
     medialibrary.h \
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     songsinlibrarysortfilter.h \
     searchframe.h \
     onetagtablemodel.h \
-    onetagsortfilter.h
+    onetagsortfilter.h \
+    extrafilters.h
 
 FORMS    += mainwindow.ui \
     librarydirectoriesdialog.ui \

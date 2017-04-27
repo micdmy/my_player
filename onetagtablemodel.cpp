@@ -40,6 +40,9 @@ QVariant OneTagTableModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole : {
         return columnsData.at(index.column()) ->at(index.row());
     }
+    case TagValue :{
+        return columnsData.at(0) ->at(index.row()); //returns tag value from first column
+    }
     default : {
         return QVariant();
     }
@@ -55,6 +58,9 @@ QVariant OneTagTableModel::headerData(int section, Qt::Orientation orientation, 
         } else { //columns
             return headerNames.at(section);
         }
+    }
+    case TagName : {
+        return headerNames.first();
     }
     default : {
         return QVariant();

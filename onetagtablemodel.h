@@ -5,6 +5,10 @@
 class OneTagTableModel : public QAbstractTableModel
 {
 public:
+    enum displyRole{
+        TagValue = Qt::UserRole+1
+    };
+
     OneTagTableModel(QObject *parent = 0);
     OneTagTableModel(const QStringList headerNames, QList<QStringList *> columnsData, QObject *parent = 0);
     void initTableWithData(const QStringList & headerNames, QList<QStringList *> columnsData);

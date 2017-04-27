@@ -51,7 +51,7 @@ public slots:
     void    editUsedTags(void);
     void    editUsedFileFormats(void);
     void    setDefaultTagsAndFileFormats(void);
-    void    reloadOneTagTableModels(QStringList & tags);
+    void    reloadOneTagTableModels(QStringList & tags); //TODO do podlaczenia z sygnalem
 private slots:
     void    reloadDirectories(QStringList add, QStringList removeList);
 };

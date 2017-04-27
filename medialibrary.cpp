@@ -246,7 +246,7 @@ void MediaLibrary::initProxyModel()
 {
     songsFilterModel = new SongsInLibrarySortFilter(this);
     songsFilterModel->setSourceModel(&songsModel);
-    connect(songsFilterModel,SIGNAL(selectedColumnsChanged()),&songsModel,SLOT(selectedColumnsChanged()));
+    //connect(songsFilterModel,SIGNAL(),&songsModel,SLOT(selectedColumnsChanged())); //chyba TODO
 }
 
 void MediaLibrary::setupProxyModel(QItemSelectionModel * selectionModel, SearchFrame * filterChangedSender)

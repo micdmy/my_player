@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     tableViewOneTag->setModel(oneTagSortFilter);
     connect(ui->frameOneTagTable,SIGNAL(searchTextChanged(QString)),
             oneTagSortFilter,SLOT(setFilterRegExp(QString)));
+    oneTagSortFilter->setSelectionModel(tableViewOneTag->selectionModel());
 }
 
 MainWindow::~MainWindow()

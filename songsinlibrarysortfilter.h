@@ -36,7 +36,7 @@ private:
 public slots:
     void selectionChanged(const QItemSelection & , const QItemSelection & );
     void filterChanged(const QString & pattern);
-    void setExtraFilter(const int columnNumber, const QString & pattern);
+    void addExtraFilter(const int columnNumber, const QString & pattern);
     void clearExtraFilter(void);
     /*
     QDate minDate;

@@ -119,7 +119,7 @@ void SongsInLibrarySortFilter::filterChanged(const QString &pattern)
 
 }
 
-void SongsInLibrarySortFilter::setExtraFilter(const int columnNumber, const QString &pattern)
+void SongsInLibrarySortFilter::addExtraFilter(const int columnNumber, const QString &pattern)
 {
 
     extraFilters.append(QPair<int,QString>(columnNumber, pattern));
