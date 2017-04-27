@@ -20,12 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    QStringList abc;
-    abc << "artist";
-    mediaLibrary.reloadOneTagTableModels(abc);
+
+    OneTagSortFilter * oneTagSortFilter =mediaLibrary.oneTagFiltersReload().first();
     tableViewOneTag = new QTableView();
     ui->frameOneTagTable->addWidget(tableViewOneTag);
-    OneTagSortFilter * oneTagSortFilter = mediaLibrary.getOneTagSortFilters().first();
     tableViewOneTag->setModel(oneTagSortFilter);
     connect(ui->frameOneTagTable,SIGNAL(searchTextChanged(QString)),
             oneTagSortFilter,SLOT(setFilterRegExp(QString)));

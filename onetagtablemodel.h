@@ -6,7 +6,8 @@ class OneTagTableModel : public QAbstractTableModel
 {
 public:
     enum displyRole{
-        TagValue = Qt::UserRole+1
+        TagValue = Qt::UserRole + 1,
+        TagName  = TagValue + 1
     };
 
     OneTagTableModel(QObject *parent = 0);

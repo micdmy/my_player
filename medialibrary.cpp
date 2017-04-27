@@ -3,14 +3,14 @@
 MediaLibrary::MediaLibrary(QObject *parent) : QObject(parent)
 {
     SongInfo::setUsedTags(QStringList());
-
+    oneTagFilters = new OneTagFilters(&songsModel);
 
 }
 
 MediaLibrary::~MediaLibrary()
 {
-    deleteOneTagModelsAndFilters();
     delete songsFilterModel;
+    delete oneTagFilters;
 }
 
 
@@ -97,35 +97,6 @@ void MediaLibrary::setDefaultTagsAndFileFormats()
     saveSettings();
 }
 
-void MediaLibrary::reloadExtraFiltersValues(QStringList & tags)
-{
-    clearExtraFiltersValues(); //deletes previous objects in this QHash
-    for(QString tag : tags) {
-        QStringList * valuesOfTheTag = new QStringList();
-        songsModel.findAllValuesOfTag(tag,valuesOfTheTag);
-        extraFiltersValues.insert(tag,valuesOfTheTag);
-    }
-}
-
-void MediaLibrary::reloadOneTagTableModels(QStringList &tags)
-{
-    deleteOneTagModelsAndFilters();
-    reloadExtraFiltersValues(tags);
-    for(auto key : extraFiltersValues.keys()) {
-        QStringList headerNames;
-        QList<QStringList *> columnsData;
-        headerNames.append(key);
-        columnsData.append(extraFiltersValues.value(key));
-        OneTagTableModel * oneTagTableModel
-                = new OneTagTableModel(headerNames,columnsData);
-        oneTagTableModels.append(oneTagTableModel);
-        OneTagSortFilter * oneTagSortFilter
-                = new OneTagSortFilter();
-        oneTagSortFilter->setSourceModel(oneTagTableModel);
-        oneTagSortFilters.append((oneTagSortFilter));
-    }
-}
-
 void MediaLibrary::saveSongs()
 {
     QFile file(ProgramPaths::mediaLibrarySongsList());
@@ -197,25 +168,6 @@ void MediaLibrary::setDefaultFileFormats()
     fileFormats << "*.mp3" << "*.flac" << "*.wma";
 }
 
-void MediaLibrary::clearExtraFiltersValues()
-{
-    for(auto key : extraFiltersValues.keys()) {
-        delete extraFiltersValues.value(key);
-    }
-    extraFiltersValues.clear();
-}
-
-void MediaLibrary::deleteOneTagModelsAndFilters()
-{
-    for(OneTagSortFilter * filter : oneTagSortFilters) {
-        delete filter;
-    }
-    for(OneTagTableModel * model : oneTagTableModels) {
-        delete model;
-    }
-    oneTagSortFilters.clear();
-    oneTagTableModels.clear();
-}
 
 void MediaLibrary::load()
 {
@@ -255,10 +207,15 @@ void MediaLibrary::setupProxyModel(QItemSelectionModel * selectionModel, SearchF
     connect(filterChangedSender,SIGNAL(searchTextChanged(QString)),songsFilterModel,SLOT(filterChanged(QString)));
 }
 
-QList<OneTagSortFilter *> MediaLibrary::getOneTagSortFilters()
+QList<OneTagSortFilter *> MediaLibrary::oneTagFiltersReload()
 {
-    return oneTagSortFilters;
+    QStringList jakiesTagi;
+    jakiesTagi << "artist";
+    //TODO powyzsze 2 linie zastap tagami z ustawien uzytkownika dla flitrow
+    return oneTagFilters->refresh(jakiesTagi);
 }
+
+
 
 
 

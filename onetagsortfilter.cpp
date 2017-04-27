@@ -64,7 +64,7 @@ void OneTagSortFilter::selectionChanged(const QItemSelection &, const QItemSelec
             QVariant data = sourceModel()->data(index,OneTagTableModel::TagValue);
             selectedTagValues.append(data.toString());
         }
-        emit oneTagFilterChanged(sourceModel()->headerData(0,0,OneTagTableModel::TagName),
-                                 sourceModel->selectedTagValues);
+        emit oneTagFilterChanged(sourceModel()->headerData(0,Qt::Horizontal,OneTagTableModel::TagName).toString(),
+                                 selectedTagValues);
     }
 }

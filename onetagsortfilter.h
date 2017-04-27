@@ -19,7 +19,7 @@ private:
     bool checkfilter(int sourceRow, const QModelIndex &sourceParent) const;
     bool checkText(int column, int sourceRow, const QModelIndex &sourceParent, QRegExp * regex) const;
 signals:
-    void oneTagFilterChanged(QstringList & selectedTagValues);
+    void oneTagFilterChanged(QString tag, QStringList & selectedTagValues);
 public slots:
     void selectionChanged(const QItemSelection & , const QItemSelection & );
 };
