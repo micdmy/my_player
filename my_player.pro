@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     onetagtablemodel.cpp \
     onetagsortfilter.cpp \
     sortedtagvalues.cpp \
-    onetagfilters.cpp
+    onetagfilters.cpp \
+    columnnames.cpp
 
 HEADERS  += mainwindow.h \
     medialibrary.h \
@@ -58,7 +59,8 @@ HEADERS  += mainwindow.h \
     onetagtablemodel.h \
     onetagsortfilter.h \
     sortedtagvalues.h \
-    onetagfilters.h
+    onetagfilters.h \
+    columnnames.h
 
 FORMS    += mainwindow.ui \
     librarydirectoriesdialog.ui \

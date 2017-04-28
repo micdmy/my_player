@@ -8,6 +8,9 @@
 class SongsInLibrary : public QAbstractTableModel
 {
 public:
+    enum displayRole{
+        WholeHeader = Qt::UserRole + 1
+    };
     SongsInLibrary(QObject * parent = 0);
     QList<SongInfo> & getSongsList();
     void removeAllSongs();

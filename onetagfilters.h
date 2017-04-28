@@ -9,11 +9,13 @@ class OneTagFilters : public SortedTagValues
 public:
     OneTagFilters(SongsInLibrary * songsInLibrary);
     ~OneTagFilters();
-    QList<OneTagSortFilter *> refresh(QStringList &tagNames);
+    QList<OneTagSortFilter *> refresh(QStringList &tagNames, QObject *receiver, const char *slot);
     void clear();
 private:
     QList<OneTagTableModel *> oneTagTableModels;
     QList<OneTagSortFilter *> oneTagSortFilters;
+
+
 };
 
 #endif // ONETAGFILTERS_H

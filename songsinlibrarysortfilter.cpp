@@ -5,6 +5,7 @@ SongsInLibrarySortFilter::SongsInLibrarySortFilter(QObject *parent)
 {
     blockSelectionChanges =false;
     setSelectedColumnSign('[',']');
+    columnNames.setData(SongInfo::getUsedTags());
 }
 
 void SongsInLibrarySortFilter::setSelectionModel(QItemSelectionModel *selectionModel)
@@ -23,8 +24,21 @@ QVariant SongsInLibrarySortFilter::headerData(int section, Qt::Orientation orien
             header = isColumnSelected(section) ? selectedColumnSign[0] + header.toString() + selectedColumnSign[1] : header;
         }
     }
+    case WholeHeader : {
+        return header; //QStringList
+    }
+    case TagName : {
+        return header;
+    }
+
     }
     return header;
+}
+
+void SongsInLibrarySortFilter::setSourceModel(QAbstractItemModel *sourceModel)
+{
+    QSortFilterProxyModel::setSourceModel(sourceModel);
+
 }
 
 void SongsInLibrarySortFilter::setSelectedColumnSign(const QChar &prefix, const QChar &suffix)
@@ -36,7 +50,7 @@ void SongsInLibrarySortFilter::setSelectedColumnSign(const QChar &prefix, const 
 bool SongsInLibrarySortFilter::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     return checkfilter(sourceRow, sourceParent)
-            && checkANDExtraFilters(sourceRow, sourceParent);
+            && checkOneTagFilters(sourceRow, sourceParent);
 }
 
 bool SongsInLibrarySortFilter::checkText(int column, int sourceRow, const QModelIndex &sourceParent, QRegExp * regex) const
@@ -83,16 +97,25 @@ bool SongsInLibrarySortFilter::checkfilter(int sourceRow, const QModelIndex &sou
     }
 }
 
-bool SongsInLibrarySortFilter::checkANDExtraFilters(int sourceRow,const QModelIndex &sourceParent) const
+bool SongsInLibrarySortFilter::checkOneTagFilters(int sourceRow,const QModelIndex &sourceParent) const
 {
-    //All filters must match.
-    for(QPair<int,QString> filter : extraFilters) {
-        QString text = sourceModel()->data(sourceModel()->index(sourceRow, filter.first, sourceParent)).toString();
-        if(text != filter.second) {
+    for(auto tagName : activeOneTagFilters.keys()) {
+
+        bool valueMatched=false;
+        for(QString tagValue : activeOneTagFilters.value(tagName)) {
+            QModelIndex as = sourceModel()->index(sourceRow, columnNames.getIndex(tagName), sourceParent);
+            QString cellValue = sourceModel()->data(as).toString();
+            if(cellValue == tagValue) {
+                valueMatched = true;
+                break;
+            }
+        }
+        if(!valueMatched) {
             return false;
         }
     }
     return true;
+
 }
 
 bool SongsInLibrarySortFilter::isColumnSelected(int section) const
@@ -122,10 +145,16 @@ void SongsInLibrarySortFilter::filterChanged(const QString &pattern)
 void SongsInLibrarySortFilter::addExtraFilter(const int columnNumber, const QString &pattern)
 {
 
-    extraFilters.append(QPair<int,QString>(columnNumber, pattern));
+    //extraFilters.append(QPair<int,QString>(columnNumber, pattern));
 }
 
 void SongsInLibrarySortFilter::clearExtraFilter()
 {
-    extraFilters.clear();
+    //extraFilters.clear();
+}
+
+void SongsInLibrarySortFilter::oneTagFilterChanged(QString tag, QStringList &selectedTagValues)
+{
+    activeOneTagFilters.insert(tag, selectedTagValues);
+    setFilterRegExp(filterRegExp());
 }

@@ -1,14 +1,14 @@
 #include "onetagsortfilter.h"
 
-OneTagSortFilter::OneTagSortFilter(QObject *parent):
+OneTagSortFilter::OneTagSortFilter(QObject * receiver, const char * slot, QObject *parent):
     QSortFilterProxyModel(parent)
 {
-
+    connection = connect(this, SIGNAL(oneTagFilterChanged(QString,QStringList&)),receiver,slot);
 }
 
 OneTagSortFilter::~OneTagSortFilter()
 {
-
+    disconnect(connection);
 }
 
 void OneTagSortFilter::setSelectionModel(QItemSelectionModel *selectionModel)
@@ -57,14 +57,20 @@ bool OneTagSortFilter::checkText(int column, int sourceRow, const QModelIndex &s
 
 void OneTagSortFilter::selectionChanged(const QItemSelection &, const QItemSelection &)
 {
+    int c = 0; //column with tag values
     if(sourceModel() != NULL) {
-        selectedTagValues.clear();
         QModelIndexList selectedRows = selectionModel->selectedRows();
-        for(QModelIndex index : selectedRows) {
-            QVariant data = sourceModel()->data(index,OneTagTableModel::TagValue);
-            selectedTagValues.append(data.toString());
+        QString tagName = sourceModel()->headerData(0,Qt::Horizontal,OneTagTableModel::TagName).toString();
+        selectedTagValues.clear();
+        if(selectedRows.isEmpty()) { //emit signal with all visible tag values
+            for(int r=0; r<rowCount(); r++) {
+              selectedTagValues.append(data(index(r, c)).toString());
+            }
+        } else { // emit signal with selected tag values
+            for(QModelIndex i : selectedRows) {
+                selectedTagValues.append(data(index(i.row(),c)).toString());
+            }
         }
-        emit oneTagFilterChanged(sourceModel()->headerData(0,Qt::Horizontal,OneTagTableModel::TagName).toString(),
-                                 selectedTagValues);
+        emit oneTagFilterChanged(tagName, selectedTagValues);
     }
 }

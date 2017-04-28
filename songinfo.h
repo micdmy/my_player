@@ -28,6 +28,7 @@ public:
     static void setUsedTags(const QStringList & tags);
     static int getUsedTagsCount(void);
     static QString & getUsedTag(int index);
+    static QStringList &getUsedTags();
     QString getPath();
     void setPath(const QString &path);
     void readFile();

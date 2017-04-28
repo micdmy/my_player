@@ -89,6 +89,10 @@ QVariant SongsInLibrary::headerData(int section, Qt::Orientation orientation, in
             return SongInfo::getUsedTag(section);
         }
     }
+    case WholeHeader : {
+        return SongInfo::getUsedTags();
+    }
+
     default : {
         return QVariant();
     }

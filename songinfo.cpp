@@ -87,6 +87,11 @@ QString &SongInfo::getUsedTag(int index)
     return emptyString;
 }
 
+QStringList &SongInfo::getUsedTags()
+{
+    return usedTagsQ;
+}
+
 
 /*
  * Returns path of asociated file.

@@ -1,6 +1,6 @@
 #include "onetagfilters.h"
 
-OneTagFilters::OneTagFilters(SongsInLibrary * songsInLibrary) :
+OneTagFilters::OneTagFilters( SongsInLibrary * songsInLibrary) :
    SortedTagValues(songsInLibrary)
 {
 
@@ -11,7 +11,7 @@ OneTagFilters::~OneTagFilters()
     clear();
 }
 
-QList<OneTagSortFilter *> OneTagFilters::refresh(QStringList &tagNames)
+QList<OneTagSortFilter *> OneTagFilters::refresh(QStringList &tagNames,QObject * receiver, const char * slot)
 {
     clear();
     SortedTagValues::refresh(tagNames);
@@ -24,7 +24,7 @@ QList<OneTagSortFilter *> OneTagFilters::refresh(QStringList &tagNames)
                 = new OneTagTableModel(headerNames,columnsData);
         oneTagTableModels.append(oneTagTableModel);
         OneTagSortFilter * oneTagSortFilter
-                = new OneTagSortFilter();
+                = new OneTagSortFilter(receiver,slot);
         oneTagSortFilter->setSourceModel(oneTagTableModel);
         oneTagSortFilters.append((oneTagSortFilter));
     }

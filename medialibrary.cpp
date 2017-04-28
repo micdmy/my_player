@@ -212,7 +212,15 @@ QList<OneTagSortFilter *> MediaLibrary::oneTagFiltersReload()
     QStringList jakiesTagi;
     jakiesTagi << "artist";
     //TODO powyzsze 2 linie zastap tagami z ustawien uzytkownika dla flitrow
-    return oneTagFilters->refresh(jakiesTagi);
+    if(songsFilterModel != 0) {
+        return oneTagFilters->refresh(jakiesTagi,
+                                      songsFilterModel,
+                                      SLOT(oneTagFilterChanged(QString,QStringList&)));
+    } else {
+        QList<OneTagSortFilter *> emptyList;
+        return emptyList;
+    }
+
 }
 
 
