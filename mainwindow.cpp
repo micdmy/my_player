@@ -6,28 +6,27 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setupCustomWidgets();
-    configSignals();
-
+    tableViewSorted =new QTableView();
+    songListSearchFrame.addWidget(tableViewSorted);
     mediaLibrary.load();
 
-    ui->tableView->setModel( mediaLibrary.getDataModelPtr() );
     mediaLibrary.initProxyModel();
     tableViewSorted->setModel( mediaLibrary.getProxyModel() );
     mediaLibrary.setupProxyModel(
                 tableViewSorted->selectionModel(), //sets selection model
-                ui->frameSearchSongs); //connects with lineEdit textChanged signal
-
-
-
-
+                &songListSearchFrame); //connects with lineEdit textChanged signal
     OneTagSortFilter * oneTagSortFilter =mediaLibrary.oneTagFiltersReload().first();
     tableViewOneTag = new QTableView();
-    ui->frameOneTagTable->addWidget(tableViewOneTag);
+    oneTagSearchFrame.addWidget(tableViewOneTag);
     tableViewOneTag->setModel(oneTagSortFilter);
-    connect(ui->frameOneTagTable,SIGNAL(searchTextChanged(QString)),
+    connect(&oneTagSearchFrame,SIGNAL(searchTextChanged(QString)),
             oneTagSortFilter,SLOT(setFilterRegExp(QString)));
     oneTagSortFilter->setSelectionModel(tableViewOneTag->selectionModel());
+
+    setCentralWidget(&centralMdiArea);
+    centralMdiArea.addSubWindow(&oneTagSearchFrame);
+    centralMdiArea.addSubWindow(&songListSearchFrame);
+    configSignals();
 }
 
 MainWindow::~MainWindow()
@@ -44,11 +43,4 @@ void MainWindow::configSignals()
     connect(ui->actionSet_default_tags_file_formats,SIGNAL(triggered()),&mediaLibrary,SLOT(setDefaultTagsAndFileFormats()));
 }
 
-void MainWindow::setupCustomWidgets()
-{
-    tableViewSorted =new QTableView();
 
-    ui->frameSearchSongs->addWidget(tableViewSorted);
-
-
-}
